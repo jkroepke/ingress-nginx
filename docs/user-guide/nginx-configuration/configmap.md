@@ -1267,6 +1267,12 @@ Sets the location of the error page for an existing service that provides authen
 Similar to the Ingress rule annotation `nginx.ingress.kubernetes.io/auth-signin`.
 _**default:**_ ""
 
+## global-auth-signin-snippet
+
+Sets a custom snippet to use with external authentication. Applied to all the locations.
+Similar to the Ingress rule annotation `nginx.ingress.kubernetes.io/auth-signin-snippet`.
+_**default:**_ ""
+
 ## global-auth-signin-redirect-param
 
 Sets the query parameter in the error page signin URL which contains the original URL of the request that failed authentication.

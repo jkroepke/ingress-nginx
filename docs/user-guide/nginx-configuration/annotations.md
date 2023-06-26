@@ -37,6 +37,8 @@ You can add these Kubernetes annotations to specific Ingress objects to customiz
 |[nginx.ingress.kubernetes.io/auth-keepalive-timeout](#external-authentication)|number|
 |[nginx.ingress.kubernetes.io/auth-proxy-set-headers](#external-authentication)|string|
 |[nginx.ingress.kubernetes.io/auth-snippet](#external-authentication)|string|
+|[nginx.ingress.kubernetes.io/auth-signin](#external-authentication)|string|
+|[nginx.ingress.kubernetes.io/auth-signin-snippet](#external-authentication)|string|
 |[nginx.ingress.kubernetes.io/enable-global-auth](#external-authentication)|"true" or "false"|
 |[nginx.ingress.kubernetes.io/backend-protocol](#backend-protocol)|string|HTTP,HTTPS,GRPC,GRPCS,AJP|
 |[nginx.ingress.kubernetes.io/canary](#canary)|"true" or "false"|
@@ -500,6 +502,16 @@ nginx.ingress.kubernetes.io/auth-snippet: |
     proxy_set_header Foo-Header 42;
 ```
 > Note: `nginx.ingress.kubernetes.io/auth-snippet` is an optional annotation. However, it may only be used in conjunction with `nginx.ingress.kubernetes.io/auth-url` and will be ignored if `nginx.ingress.kubernetes.io/auth-url` is not set
+
+* `nginx.ingress.kubernetes.io/auth-signin-snippet`:
+  `<Auth_Snippet>` to specify a custom snippet to use with external authentication, e.g.
+
+```yaml
+nginx.ingress.kubernetes.io/auth-signin: http://foo.com/external-auth
+nginx.ingress.kubernetes.io/auth-signin-snippet: |
+    add_header Set-Cookie "redirect_to=/foo/" always;
+```
+> Note: `nginx.ingress.kubernetes.io/auth-signin-snippet` is an optional annotation. However, it may only be used in conjunction with `nginx.ingress.kubernetes.io/auth-signin` and will be ignored if `nginx.ingress.kubernetes.io/auth-signin` is not set
 
 !!! example
     Please check the [external-auth](../../examples/auth/external-auth/README.md) example.

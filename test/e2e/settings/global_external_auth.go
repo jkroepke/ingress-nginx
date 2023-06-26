@@ -261,6 +261,18 @@ var _ = framework.DescribeSetting("[Security] global-auth-url", func() {
 				})
 		})
 
+		ginkgo.It(`should set signin-snippet when global external auth is configured`, func() {
+			globalExternalAuthSigninSnippetSetting := "global-auth-signin-snippet"
+			globalExternalAuthSigninSnippet := "proxy_set_header My-Custom-Header 42;"
+
+			ginkgo.By("Adding a global-auth-signin-snippet to configMap")
+			f.UpdateNginxConfigMapData(globalExternalAuthSigninSnippetSetting, globalExternalAuthSigninSnippet)
+			f.WaitForNginxServer(host,
+				func(server string) bool {
+					return strings.Contains(server, globalExternalAuthSigninSnippet)
+				})
+		})
+
 	})
 
 	ginkgo.Context("cookie set by external authentication server", func() {

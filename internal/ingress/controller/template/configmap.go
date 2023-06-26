@@ -61,6 +61,7 @@ const (
 	globalAuthResponseHeaders     = "global-auth-response-headers"
 	globalAuthRequestRedirect     = "global-auth-request-redirect"
 	globalAuthSnippet             = "global-auth-snippet"
+	globalAuthSigninSnippet       = "global-auth-signin-snippet"
 	globalAuthCacheKey            = "global-auth-cache-key"
 	globalAuthCacheDuration       = "global-auth-cache-duration"
 	globalAuthAlwaysSetCookie     = "global-auth-always-set-cookie"
@@ -307,6 +308,11 @@ func ReadConfig(src map[string]string) config.Configuration {
 	if val, ok := conf[globalAuthSnippet]; ok {
 		delete(conf, globalAuthSnippet)
 		to.GlobalExternalAuth.AuthSnippet = val
+	}
+
+	if val, ok := conf[globalAuthSigninSnippet]; ok {
+		delete(conf, globalAuthSigninSnippet)
+		to.GlobalExternalAuth.AuthSigninSnippet = val
 	}
 
 	if val, ok := conf[globalAuthCacheKey]; ok {

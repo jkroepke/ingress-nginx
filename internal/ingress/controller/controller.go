@@ -681,6 +681,11 @@ func dropSnippetDirectives(anns *annotations.Ingress, ingKey string) {
 			anns.ExternalAuth.AuthSnippet = ""
 		}
 
+		if anns.ExternalAuth.AuthSigninSnippet != "" {
+			klog.V(3).Infof("Ingress %q tried to use auth-signin-snippet and the annotation is disabled by the admin. Removing the annotation", ingKey)
+			anns.ExternalAuth.AuthSigninSnippet = ""
+		}
+
 		if anns.StreamSnippet != "" {
 			klog.V(3).Infof("Ingress %q tried to use stream-snippet and the annotation is disabled by the admin. Removing the annotation", ingKey)
 			anns.StreamSnippet = ""

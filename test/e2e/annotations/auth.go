@@ -281,6 +281,25 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 			})
 	})
 
+	ginkgo.It(`should set signin-snippet "proxy_set_header My-Custom-Header 43;" when external auth is configured`, func() {
+		host := "auth"
+
+		annotations := map[string]string{
+			"nginx.ingress.kubernetes.io/auth-url":    "http://foo.bar/basic-auth/user/password",
+			"nginx.ingress.kubernetes.io/auth-signin": "http://foo.bar/login",
+			"nginx.ingress.kubernetes.io/auth-signin-snippet": `
+				proxy_set_header My-Custom-Header 43;`,
+		}
+
+		ing := framework.NewSingleIngress(host, "/", host, f.Namespace, framework.EchoService, 80, annotations)
+		f.EnsureIngress(ing)
+
+		f.WaitForNginxServer(host,
+			func(server string) bool {
+				return strings.Contains(server, `proxy_set_header My-Custom-Header 43;`)
+			})
+	})
+
 	ginkgo.It(`should not set snippet "proxy_set_header My-Custom-Header 42;" when external auth is not configured`, func() {
 		host := "auth"
 
@@ -295,6 +314,24 @@ var _ = framework.DescribeAnnotation("auth-*", func() {
 		f.WaitForNginxServer(host,
 			func(server string) bool {
 				return !strings.Contains(server, `proxy_set_header My-Custom-Header 42;`)
+			})
+	})
+
+	ginkgo.It(`should not set signin-snippet "proxy_set_header My-Custom-Header 43;" when auth-signin is not configured`, func() {
+		host := "auth"
+
+		annotations := map[string]string{
+			"nginx.ingress.kubernetes.io/auth-url": "http://foo.bar/basic-auth/user/password",
+			"nginx.ingress.kubernetes.io/auth-signin-snippet": `
+				proxy_set_header My-Custom-Header 43;`,
+		}
+
+		ing := framework.NewSingleIngress(host, "/", host, f.Namespace, framework.EchoService, 80, annotations)
+		f.EnsureIngress(ing)
+
+		f.WaitForNginxServer(host,
+			func(server string) bool {
+				return !strings.Contains(server, `proxy_set_header My-Custom-Header 43;`)
 			})
 	})
 

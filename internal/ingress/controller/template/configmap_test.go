@@ -342,6 +342,23 @@ func TestGlobalExternalAuthSnippetParsing(t *testing.T) {
 	}
 }
 
+func TestGlobalExternalAuthSigninSnippetParsing(t *testing.T) {
+	testCases := map[string]struct {
+		authSnippet string
+		expect      string
+	}{
+		"empty":        {"", ""},
+		"auth snippet": {"proxy_set_header My-Custom-Header 42;", "proxy_set_header My-Custom-Header 42;"},
+	}
+
+	for n, tc := range testCases {
+		cfg := ReadConfig(map[string]string{"global-auth-signin-snippet": tc.authSnippet})
+		if cfg.GlobalExternalAuth.AuthSigninSnippet != tc.expect {
+			t.Errorf("Testing %v. Expected \"%v\" but \"%v\" was returned", n, tc.expect, cfg.GlobalExternalAuth.AuthSnippet)
+		}
+	}
+}
+
 func TestGlobalExternalAuthCacheDurationParsing(t *testing.T) {
 	testCases := map[string]struct {
 		durations string

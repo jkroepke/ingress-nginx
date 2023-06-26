@@ -21,14 +21,12 @@ import (
 	"regexp"
 	"strings"
 
-	"k8s.io/klog/v2"
-
 	networking "k8s.io/api/networking/v1"
-
 	"k8s.io/ingress-nginx/internal/ingress/annotations/parser"
 	ing_errors "k8s.io/ingress-nginx/internal/ingress/errors"
 	"k8s.io/ingress-nginx/internal/ingress/resolver"
 	"k8s.io/ingress-nginx/pkg/util/sets"
+	"k8s.io/klog/v2"
 )
 
 // Config returns external authentication configuration for an Ingress rule
@@ -42,6 +40,7 @@ type Config struct {
 	ResponseHeaders        []string          `json:"responseHeaders,omitempty"`
 	RequestRedirect        string            `json:"requestRedirect"`
 	AuthSnippet            string            `json:"authSnippet"`
+	AuthSigninSnippet      string            `json:"authSigninSnippet"`
 	AuthCacheKey           string            `json:"authCacheKey"`
 	AuthCacheDuration      []string          `json:"authCacheDuration"`
 	KeepaliveConnections   int               `json:"keepaliveConnections"`
@@ -94,6 +93,9 @@ func (e1 *Config) Equal(e2 *Config) bool {
 		return false
 	}
 	if e1.AuthSnippet != e2.AuthSnippet {
+		return false
+	}
+	if e1.AuthSigninSnippet != e2.AuthSigninSnippet {
 		return false
 	}
 
@@ -216,6 +218,11 @@ func (a authReq) Parse(ing *networking.Ingress) (interface{}, error) {
 		klog.V(3).InfoS("auth-snippet annotation is undefined and will not be set")
 	}
 
+	authSigninSnippet, err := parser.GetStringAnnotation("auth-signin-snippet", ing)
+	if err != nil {
+		klog.V(3).InfoS("auth-signin-snippet annotation is undefined and will not be set")
+	}
+
 	authCacheKey, err := parser.GetStringAnnotation("auth-cache-key", ing)
 	if err != nil {
 		klog.V(3).InfoS("auth-cache-key annotation is undefined and will not be set")
@@ -314,6 +321,7 @@ func (a authReq) Parse(ing *networking.Ingress) (interface{}, error) {
 		ResponseHeaders:        responseHeaders,
 		RequestRedirect:        requestRedirect,
 		AuthSnippet:            authSnippet,
+		AuthSigninSnippet:      authSigninSnippet,
 		AuthCacheKey:           authCacheKey,
 		AuthCacheDuration:      authCacheDuration,
 		KeepaliveConnections:   keepaliveConnections,
