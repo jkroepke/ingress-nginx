@@ -1,6 +1,12 @@
 ## nginx configuration
 ## Ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/index.md
 ##
+global: {}
+# To help compatibility with other charts which use global.imagePullSecrets.
+# global:
+#   imagePullSecrets:
+#   - name: pullSecret1
+#   - name: pullSecret2
 
 ## Overrides for generated resource names
 # See templates/_helpers.tpl

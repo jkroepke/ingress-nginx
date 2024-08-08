@@ -52,8 +52,8 @@ spec:
       hostname: {{ toYaml .Values.controller.hostname | nindent 8 }}
     {{- end }}
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
-    {{- if .Values.imagePullSecrets }}
-      imagePullSecrets: {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+    {{- with (.Values.global.imagePullSecrets | default .Values.imagePullSecrets) }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- if .Values.controller.priorityClassName }}
       priorityClassName: {{ .Values.controller.priorityClassName | quote }}

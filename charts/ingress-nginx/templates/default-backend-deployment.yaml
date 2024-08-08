@@ -39,8 +39,9 @@ spec:
         {{- toYaml .Values.defaultBackend.podLabels | nindent 8 }}
       {{- end }}
     spec:
-    {{- if .Values.imagePullSecrets }}
-      imagePullSecrets: {{ toYaml .Values.imagePullSecrets | nindent 8 }}
+    {{- with (.Values.global.imagePullSecrets | default .Values.imagePullSecrets) }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- if .Values.defaultBackend.priorityClassName }}
       priorityClassName: {{ .Values.defaultBackend.priorityClassName }}
